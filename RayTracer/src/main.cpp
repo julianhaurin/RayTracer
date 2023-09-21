@@ -19,7 +19,7 @@ int main() {
 
 	
 	Scene testScene(256, 256);
-	testScene.RenderImage(std::cout);
+	//testScene.RenderImage(std::cout);
 
 	return EXIT_SUCCESS;
 
