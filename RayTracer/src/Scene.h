@@ -1,6 +1,9 @@
 
 // Represents an image to be rendered
 
+// Notes:
+// WRITING FUNCTIONALITY CURRENTLY COMMENTED OUT
+
 #pragma once
 
 #include <iostream>

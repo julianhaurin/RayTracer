@@ -8,8 +8,10 @@
 // Notes:
 // image widht/height and viewport width/height need to be uniform across
 // camera class and scene class - fix
+// add functionality to more easily write to .ppm file
 
 #include <iostream>
+#include <fstream>
 #include <cstdint>
 
 #include <glm/glm.hpp>
@@ -17,15 +19,85 @@
 #include "Camera.h"
 #include "Scene.h"
 
+void writeColor(std::ostream& outStream, const glm::vec3 pixelColor);
+glm::vec3 rayColor(const Ray& in_ray);
+
 int main() {
 
-	// viewport height, image height, aspect ratio
-	Camera camera(2.0f, 800.0f, 16.0f / 9.0f); 
+	// Image //
+	const float aspectRatio = 16.0f / 9.0f;
+	const uint32_t imageWidth = 400;
+	const uint32_t imageHeight = static_cast<uint32_t>(imageWidth / aspectRatio);
+
+	// Camera //
+	const float focalLength = 1.0f;
+	const float viewportHeight = 2.0f;
+	const float viewportWidth = viewportHeight * (static_cast<float>(imageWidth) /  imageHeight);
+	const glm::vec3 cameraCenter(0.0f, 0.0f, 0.0f);
+
+	const glm::vec3 viewport_U(viewportWidth, 0, 0);
+	const glm::vec3 viewport_V(0, -viewportHeight, 0);
+
+	const glm::vec3 pixelDelta_U = viewport_U / static_cast<float>(imageWidth);
+	const glm::vec3 pixelDelta_V = viewport_V / static_cast<float>(imageHeight);
+
+	const glm::vec3 viewportUpperLeft =
+		cameraCenter - glm::vec3(0, 0, focalLength) - viewport_U / 2.0f - viewport_V / 2.0f;
+
+	const glm::vec3 pixelOriginLoc = viewportUpperLeft + 0.5f * (pixelDelta_U + pixelDelta_V);
+
+	std::cout << "P3\n";
+	std::cout << imageWidth << " " << imageHeight << "\n";
+	std::cout << "255\n";
+
+	for (uint32_t i = 0; i < imageHeight; i++) {
+		for (uint32_t j = 0; j < imageWidth; j++) {
+
+			const glm::vec3 pixelCenter = pixelOriginLoc + ((float)i * pixelDelta_V) + ((float)j * pixelDelta_U);
+			const glm::vec3 rayDirection = pixelCenter - cameraCenter;
+
+			Ray ray(cameraCenter, rayDirection);
+
+			const glm::vec3 pixelColor = rayColor(ray);
+			writeColor(std::cout, pixelColor);
+		}
+	}
 
 
-	Scene scene(camera, 256, 256);
-	scene.RenderImage(std::cout);
 
-	return EXIT_SUCCESS;
+}
+
+void writeColor(std::ostream& outStream, const glm::vec3 pixelColor) {
+	outStream << static_cast<int>(255.0f * pixelColor.x) << ' '
+			  << static_cast<int>(255.0f * pixelColor.y) << ' '
+			  << static_cast<int>(255.0f * pixelColor.z) << '\n';
+}
+
+float hitSphere(const glm::vec3 in_center, const float radius, const Ray& in_ray) {
+	const glm::vec3 oc = in_ray.getOrigin() - in_center;
+	auto a = glm::dot(in_ray.getDirection(), in_ray.getDirection());
+	auto b = 2.0 * glm::dot(oc, in_ray.getDirection());
+	auto c = dot(oc, oc) - radius * radius;
+	auto discriminant = b * b - 4 * a * c;
+
+	if (discriminant < 0) {
+		return -1.0;
+	}
+	return (-b - sqrt(discriminant)) / (2.0f * a);
+	
+
+}
+
+glm::vec3 rayColor(const Ray& in_ray) {
+	
+	auto t = hitSphere(glm::vec3(0, 0, -1), 0.5f, in_ray);
+	if (t > 0) {
+		glm::vec3 N = glm::normalize(in_ray.at(t) - glm::vec3(0, 0, -1));
+		return 0.5f * glm::vec3(N.x + 1, N.y + 1, N.z + 1);
+	}
+
+	glm::vec3 unitDir = glm::normalize(in_ray.getDirection());
+	float a = 0.5f * (unitDir.y + 1.0f);
+	return (1.0f - a) * glm::vec3(1.0f, 1.0f, 1.0f) + a * glm::vec3(0.5f, 0.7f, 1.0f);
 
 }

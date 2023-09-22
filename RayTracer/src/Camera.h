@@ -1,6 +1,8 @@
 
 // Represents a camera
 
+// Notes:
+
 #pragma once
 
 #include <cstdint>

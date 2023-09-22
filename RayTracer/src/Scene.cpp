@@ -3,12 +3,6 @@
 
 #include "Scene.h"
 
-glm::vec3 rayColor(const Ray& in_ray) {
-	glm::vec3 unitDirection = glm::normalize(in_ray.getDirection());
-	const float a = 0.5f * (unitDirection.y + 1.0f);
-	return (1.0f - a) * glm::vec3(1.0f, 1.0f, 1.0f) + a * glm::vec3(0.5f, 0.7f, 1.0f);
-}
-
 // Public Methods //
 
 Scene::Scene(const Camera& in_camera, const uint32_t in_imageHeight, const uint32_t in_imageWidth)
@@ -19,12 +13,12 @@ Scene::Scene(const Camera& in_camera, const uint32_t in_imageHeight, const uint3
 
 void Scene::RenderImage(std::ostream& in_outStream) const {
 
-	std::cout << "[J] - Rendering image... " << std::endl;
+	//std::cout << "[J] - Rendering image... " << std::endl;
 	writeMetadata(in_outStream);
 
 	for (int i = 0; i < m_imageHeight; i++) {
 		// progress bar
-		std::clog << "\rScanlines remaining: " << (m_imageHeight - i) << ' ' << std::flush;
+		//std::clog << "\rScanlines remaining: " << (m_imageHeight - i) << ' ' << std::flush;
 
 		for (int j = 0; j < m_imageWidth; j++) {
 
@@ -34,13 +28,13 @@ void Scene::RenderImage(std::ostream& in_outStream) const {
 			Ray ray(m_camera.getCameraCenter(), rayDir);
 
 			//glm::vec3 pixelColor(float(i) / (m_imageWidth - 1.0f), float(j) / (m_imageHeight - 1.0f), 0.0f);
-			glm::vec3 pixelColor = rayColor(ray);
-			writeVec3(in_outStream, pixelColor);
+			//glm::vec3 pixelColor = rayColor(ray);
+			//writeVec3(in_outStream, pixelColor);
 
 		}
 	}
 
-	std::cout << "[J] - Successfully rendered image! " << std::endl;
+	//std::cout << "[J] - Successfully rendered image! " << std::endl;
 
 }
 
