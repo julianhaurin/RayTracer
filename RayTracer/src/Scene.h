@@ -4,6 +4,7 @@
 // Notes:
 // WRITING FUNCTIONALITY CURRENTLY COMMENTED OUT
 
+/*
 #pragma once
 
 #include <iostream>
@@ -38,3 +39,5 @@ private:
 
 
 };
+*/
+

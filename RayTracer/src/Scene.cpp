@@ -5,6 +5,8 @@
 
 // Public Methods //
 
+/*
+
 Scene::Scene(const Camera& in_camera, const uint32_t in_imageHeight, const uint32_t in_imageWidth)
 	: m_camera(in_camera),
 	  m_imageHeight(in_imageHeight), m_imageWidth(in_imageWidth), 
@@ -22,10 +24,10 @@ void Scene::RenderImage(std::ostream& in_outStream) const {
 
 		for (int j = 0; j < m_imageWidth; j++) {
 
-			glm::vec3 pixelCenter = m_camera.getPixelCenter(i, j);
-			glm::vec3 rayDir = m_camera.getRayDirection(pixelCenter);
+			//glm::vec3 pixelCenter = m_camera.getPixelCenter(i, j);
+			//glm::vec3 rayDir = m_camera.getRayDirection(pixelCenter);
 
-			Ray ray(m_camera.getCameraCenter(), rayDir);
+			//Ray ray(m_camera.getCameraCenter(), rayDir);
 
 			//glm::vec3 pixelColor(float(i) / (m_imageWidth - 1.0f), float(j) / (m_imageHeight - 1.0f), 0.0f);
 			//glm::vec3 pixelColor = rayColor(ray);
@@ -56,3 +58,4 @@ void Scene::writeVec3(std::ostream& in_outStream, glm::vec3 in_vec) const {
 				 << static_cast<uint32_t>(m_rgbRange * in_vec.z) << std::endl;
 }
 
+*/

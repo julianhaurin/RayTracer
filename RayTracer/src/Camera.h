@@ -2,44 +2,48 @@
 // Represents a camera
 
 // Notes:
+// some member variables initialized with default values for now
 
 #pragma once
 
+#include <iostream>
 #include <cstdint>
 #include <glm/glm.hpp>
+
+#include "RenderObjects/RenderObject.h"
 
 class Camera
 {
 
 public:
 
-	Camera(const float in_viewportHeight, const float in_imageHeight, const float in_aspectRatio);
+	Camera(const float in_aspectRatio, const uint32_t in_imageWidth);
 
-	glm::vec3 getPixelCenter(const float height, const float width) const;
-	glm::vec3 getRayDirection(const glm::vec3 in_pixelCenter) const;
+	void Render(const RenderObject& in_worldObjects);
 
-	inline glm::vec3 getCameraCenter() const { return m_center; }
 
 private:
 
-	// camera and viewport data //
-	const float m_viewportHeight;
-	const float m_viewportWidth;
+	// input parameters
+	const float m_aspectRatio;
+	const uint32_t m_imageWidth;
 
-	const glm::vec3 m_viewport_U; // horizontal vector
-	const glm::vec3 m_viewport_V; // vertical vector
-
-	const glm::vec3 m_pixelDelta_U; // horizontal delta between pixels
-	const glm::vec3 m_pixelDelta_V; // vertical delta between pixels
-
-	const uint32_t m_focalLength;
+	const uint32_t m_imageHeight;
 
 	const glm::vec3 m_center;
+	const float m_viewportHeight;
+	const float m_viewportWidth;
+	const glm::vec3 m_viewport_U;
+	const glm::vec3 m_viewport_V;
+	
+	const glm::vec3 pixelDelta_U;
+	const glm::vec3 pixelDelta_V;
 
 	const glm::vec3 m_viewportUpperLeft;
-	const glm::vec3 m_pixelOriginLoc; // pixel (0, 0)
+	const glm::vec3 m_pixelOriginLoc;
 
-	
+	void writeColor(std::ostream& outStream, const glm::vec3 pixelColor);
+	glm::vec3 rayColor(const Ray& in_ray, const RenderObject& in_object);
 
 
 };
