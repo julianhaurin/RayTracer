@@ -25,7 +25,7 @@
 int main() {
 
 	// Image //
-	const float aspectRatio = 2.0f / 1.0f;
+	const float aspectRatio = 16.0f / 9.0f;
 	const uint32_t imageWidth = 400;
 
 	// World Objects //

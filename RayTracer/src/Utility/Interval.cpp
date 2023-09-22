@@ -19,5 +19,11 @@ bool Interval::surrounds(const float in_val) const {
 	return m_min < in_val && in_val < m_max;
 }
 
+float Interval::clamp(const float in_val) const {
+	if (in_val < m_min) return m_min;
+	if (in_val > m_max) return m_max;
+	return in_val;
+}
+
 // Private Methods //
 

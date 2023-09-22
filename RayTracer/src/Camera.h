@@ -11,6 +11,7 @@
 #include <glm/glm.hpp>
 
 #include "RenderObjects/RenderObject.h"
+#include "Utility/utility.h"
 
 class Camera
 {
@@ -36,14 +37,19 @@ private:
 	const glm::vec3 m_viewport_U;
 	const glm::vec3 m_viewport_V;
 	
-	const glm::vec3 pixelDelta_U;
-	const glm::vec3 pixelDelta_V;
+	const glm::vec3 m_pixelDelta_U;
+	const glm::vec3 m_pixelDelta_V;
 
 	const glm::vec3 m_viewportUpperLeft;
 	const glm::vec3 m_pixelOriginLoc;
 
-	void writeColor(std::ostream& outStream, const glm::vec3 pixelColor);
-	glm::vec3 rayColor(const Ray& in_ray, const RenderObject& in_object);
+	const uint32_t m_samplesPerPixel;
 
+	void writeColor(std::ostream& outStream, const glm::vec3 pixelColor, const uint32_t in_sampelsPerPixel);
+
+	glm::vec3 pixelSampleSquare() const;
+	Ray getRay(uint32_t i, uint32_t j) const;
+
+	glm::vec3 rayColor(const Ray& in_ray, const RenderObject& in_object, const int32_t in_depth);
 
 };

@@ -19,6 +19,7 @@ public:
 
 	bool contains(const float in_val) const;
 	bool surrounds(const float in_val) const;
+	float clamp(const float in_val) const;
 
 private:
 
