@@ -9,18 +9,23 @@
 // image widht/height and viewport width/height need to be uniform across
 // camera class and scene class - fix
 // add functionality to more easily write to .ppm file
+// change hittable name
 
 #include <iostream>
 #include <fstream>
 #include <cstdint>
+#include <cmath>
 
 #include <glm/glm.hpp>
 
 #include "Camera.h"
 #include "Scene.h"
+#include "RenderObjects/RenderObject.h"
+#include "RenderObjects/RenderObjectList.h"
+#include "RenderObjects/Sphere.h"
 
 void writeColor(std::ostream& outStream, const glm::vec3 pixelColor);
-glm::vec3 rayColor(const Ray& in_ray);
+glm::vec3 rayColor(const Ray& in_ray, const RenderObject& in_object);
 
 int main() {
 
@@ -28,6 +33,12 @@ int main() {
 	const float aspectRatio = 16.0f / 9.0f;
 	const uint32_t imageWidth = 400;
 	const uint32_t imageHeight = static_cast<uint32_t>(imageWidth / aspectRatio);
+
+	// World Objects //
+	
+	RenderObjectList worldObjects = RenderObjectList();
+	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(0, 0, -1), 0.5f));
+	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(0, -100.5f, -1), 100.0f));
 
 	// Camera //
 	const float focalLength = 1.0f;
@@ -58,7 +69,7 @@ int main() {
 
 			Ray ray(cameraCenter, rayDirection);
 
-			const glm::vec3 pixelColor = rayColor(ray);
+			const glm::vec3 pixelColor = rayColor(ray, worldObjects);
 			writeColor(std::cout, pixelColor);
 		}
 	}
@@ -88,12 +99,11 @@ float hitSphere(const glm::vec3 in_center, const float radius, const Ray& in_ray
 
 }
 
-glm::vec3 rayColor(const Ray& in_ray) {
+glm::vec3 rayColor(const Ray& in_ray, const RenderObject& in_object) {
 	
-	auto t = hitSphere(glm::vec3(0, 0, -1), 0.5f, in_ray);
-	if (t > 0) {
-		glm::vec3 N = glm::normalize(in_ray.at(t) - glm::vec3(0, 0, -1));
-		return 0.5f * glm::vec3(N.x + 1, N.y + 1, N.z + 1);
+	HitRecord hitRec;
+	if (in_object.isHit(in_ray, Interval(0, INT_MAX), hitRec)) {
+		return 0.5f * (hitRec.normal + glm::vec3(1, 1, 1));
 	}
 
 	glm::vec3 unitDir = glm::normalize(in_ray.getDirection());
