@@ -3,11 +3,18 @@
 
 #include "Scene.h"
 
+glm::vec3 rayColor(const Ray& in_ray) {
+	glm::vec3 unitDirection = glm::normalize(in_ray.getDirection());
+	const float a = 0.5f * (unitDirection.y + 1.0f);
+	return (1.0f - a) * glm::vec3(1.0f, 1.0f, 1.0f) + a * glm::vec3(0.5f, 0.7f, 1.0f);
+}
+
 // Public Methods //
 
-Scene::Scene(const uint32_t in_imageHeight, const uint32_t in_imageWidth)
-	: m_imageHeight(in_imageHeight), m_imageWidth(in_imageWidth), 
-	  m_rgbRange(255)
+Scene::Scene(const Camera& in_camera, const uint32_t in_imageHeight, const uint32_t in_imageWidth)
+	: m_camera(in_camera),
+	  m_imageHeight(in_imageHeight), m_imageWidth(in_imageWidth), 
+	  m_aspectRatio(in_imageWidth / m_imageHeight), m_rgbRange(255)
 {}
 
 void Scene::RenderImage(std::ostream& in_outStream) const {
@@ -21,7 +28,13 @@ void Scene::RenderImage(std::ostream& in_outStream) const {
 
 		for (int j = 0; j < m_imageWidth; j++) {
 
-			glm::vec3 pixelColor(float(i) / (m_imageWidth - 1.0f), float(j) / (m_imageHeight - 1.0f), 0.0f);
+			glm::vec3 pixelCenter = m_camera.getPixelCenter(i, j);
+			glm::vec3 rayDir = m_camera.getRayDirection(pixelCenter);
+
+			Ray ray(m_camera.getCameraCenter(), rayDir);
+
+			//glm::vec3 pixelColor(float(i) / (m_imageWidth - 1.0f), float(j) / (m_imageHeight - 1.0f), 0.0f);
+			glm::vec3 pixelColor = rayColor(ray);
 			writeVec3(in_outStream, pixelColor);
 
 		}
