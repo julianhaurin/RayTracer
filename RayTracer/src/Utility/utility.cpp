@@ -34,3 +34,13 @@ glm::vec3 randomVec3onHemisphere(const glm::vec3& in_normal) {
 
     return -onUnitSphere;
 }
+
+bool isVecNearZero(const glm::vec3 in_vec) {
+    const float size = 1e-8f;
+    return (fabs(in_vec.x) < size) && (fabs(in_vec.y) < size) && (fabs(in_vec.z) < size);
+}
+
+glm::vec3 reflect(const glm::vec3 in_vec1, const glm::vec3 in_vec2) {
+    return in_vec1 - 2 * dot(in_vec1, in_vec2) * in_vec2;
+}
+

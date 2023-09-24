@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <cmath>
 #include <random>
 
 #include "glm/glm.hpp"
@@ -14,4 +15,7 @@ glm::vec3 randomVec3inUnitSphere();
 glm::vec3 randomUnitVector();
 
 glm::vec3 randomVec3onHemisphere(const glm::vec3& in_normal);
+
+bool isVecNearZero(const glm::vec3 in_vec);
+glm::vec3 reflect(const glm::vec3 in_vec1, const glm::vec3 in_vec2);
 

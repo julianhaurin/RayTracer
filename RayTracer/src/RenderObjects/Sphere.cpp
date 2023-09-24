@@ -7,8 +7,8 @@ Sphere::Sphere()
     : m_center(glm::vec3(0, 0, 0)), m_radius(1)
 {}
 
-Sphere::Sphere(const glm::vec3 in_center, const float in_radius) 
-	: m_center(in_center), m_radius(in_radius)
+Sphere::Sphere(const glm::vec3 in_center, const float in_radius, std::shared_ptr<Material> in_material_p)
+	: m_center(in_center), m_radius(in_radius), m_material_p(in_material_p)
 {}
 
 Sphere::~Sphere() {
@@ -37,12 +37,13 @@ bool Sphere::isHit(const Ray& in_ray, Interval in_interval, HitRecord& in_hitRec
         if (!in_interval.surrounds(root)) return false;
     }
 
-    in_hitRecord.t = root;
-    in_hitRecord.point = in_ray.at(in_hitRecord.t);
-    in_hitRecord.normal = (in_hitRecord.point - m_center) / m_radius;
+    in_hitRecord.m_t = root;
+    in_hitRecord.m_point = in_ray.at(in_hitRecord.m_t);
+    in_hitRecord.m_normal = (in_hitRecord.m_point - m_center) / m_radius;
 
-    glm::vec3 outwardNormal = (in_hitRecord.point - m_center) / m_radius;
+    glm::vec3 outwardNormal = (in_hitRecord.m_point - m_center) / m_radius;
     in_hitRecord.setFaceNormal(in_ray, outwardNormal);
+    in_hitRecord.m_material_p = m_material_p;
 
 	return true;
 

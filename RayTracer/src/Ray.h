@@ -10,7 +10,7 @@ class Ray
 
 public:
 
-	Ray();
+	//Ray();
 	Ray(const glm::vec3 in_origin, const glm::vec3 in_direction);
 
 	// getters

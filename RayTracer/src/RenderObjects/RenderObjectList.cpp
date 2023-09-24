@@ -28,7 +28,7 @@ bool RenderObjectList::isHit(const Ray& in_ray, Interval in_interval, HitRecord&
     for (const auto& object : m_RenderObjects) {
         if (object->isHit(in_ray, Interval(in_interval.getMin(), closestSoFar), tempHitRec)) {
             hitAnything = true;
-            closestSoFar = tempHitRec.t;
+            closestSoFar = tempHitRec.m_t;
             in_hitRecord = tempHitRec;
         }
     }

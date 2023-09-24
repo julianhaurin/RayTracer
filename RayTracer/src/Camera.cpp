@@ -81,9 +81,13 @@ glm::vec3 Camera::rayColor(const Ray& in_ray, const RenderObject& in_object, con
 	if (in_depth <= 0) return glm::vec3(0, 0, 0);
 
 	HitRecord hitRec;
+
 	if (in_object.isHit(in_ray, Interval(0.001f, INT_MAX), hitRec)) {
-		glm::vec3 direction = randomVec3onHemisphere(hitRec.normal);
-		return 0.5f * rayColor(Ray(hitRec.point, direction), in_object, in_depth - 1);
+		Ray scattered = Ray(glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
+        glm::vec3 attenuation;
+        if (hitRec.m_material_p->Scatter(in_ray, hitRec, attenuation, scattered))
+            return attenuation * rayColor(scattered, in_object, in_depth - 1);
+        return glm::vec3(0,0,0);
 	}
 
 	glm::vec3 unitDir = glm::normalize(in_ray.getDirection());
