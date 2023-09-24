@@ -1,6 +1,5 @@
 
 // Ray Tracer - Julian Haurin - 9/21/23
-// C++ 20 required
 
 // Sources:
 // raytracing.github.io/books/RayTracingInOneWeekend.html
