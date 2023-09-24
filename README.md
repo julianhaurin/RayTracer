@@ -8,3 +8,5 @@ Supports different render objects and materials.
 
 Outputs a PPM image of the rendered scene. 
 
+Trello link: https://trello.com/invite/b/ALmeT29y/ATTIea2ccee4579693c8d166a18aa8cad14c17B7D238/ray-tracer-basics
+
