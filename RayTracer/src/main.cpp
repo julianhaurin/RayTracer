@@ -29,22 +29,24 @@ int main() {
 
 	// Image //
 	const float aspectRatio = 16.0f / 9.0f;
-	const uint32_t imageWidth = 400;
+	const uint32_t imageWidth = 800;
 
 	// World Objects //
 	RenderObjectList worldObjects = RenderObjectList();
 	
-	auto material_ground = std::make_shared<Lambertia>(glm::vec3(0.8, 0.8, 0.0));
+	auto material_ground = std::make_shared<Lambertia>(glm::vec3(0.8, 0.8, 0.9));
 	auto material_center = std::make_shared<Lambertia>(glm::vec3(0.7, 0.3, 0.3));
 	auto material_left = std::make_shared<Metal>(glm::vec3(0.8, 0.8, 0.8));
 	auto material_right = std::make_shared<Metal>(glm::vec3(0.8, 0.6, 0.2));
 
-	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(0.0, -100.5, -1.0), 100.0, material_ground));
-	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(0.0, 0.0, -1.0), 0.5, material_center));
-	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(-1.0, 2.0, -1.0), 0.5, material_left));
-	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(12.0, 0.0, -4.0), 0.1, material_right));
-	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(-2.0, 0.0, -1.0), 0.1, material_left));
-	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(1.0, 4.0, -1.0), 0.2, material_right));
+	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(0.0, -100.5, -100.0), 100.0, material_ground));
+	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(0.0, -0.5, -1.0), 0.5, material_center));
+
+	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(-1.0, 0.5, -1.0), 0.5, material_left));
+	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(1.0, -1.0, -4.0), 0.5, material_right));
+	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(-1.0, 0.0, -20.0), 8, material_left));
+	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(1.0, 1.0, -1.0), 1.0, material_right));
+	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(1.0, 1.0, -1.0), 0.2, material_ground));
 
 	// Camera //
 	Camera camera = Camera(aspectRatio, imageWidth);
