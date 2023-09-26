@@ -17,5 +17,7 @@ glm::vec3 randomUnitVector();
 glm::vec3 randomVec3onHemisphere(const glm::vec3& in_normal);
 
 bool isVecNearZero(const glm::vec3 in_vec);
+
 glm::vec3 reflect(const glm::vec3 in_vec1, const glm::vec3 in_vec2);
+glm::vec3 refract(const glm::vec3 in_vec1, const glm::vec3 in_vec2, const float in_etaiOverEtat);
 

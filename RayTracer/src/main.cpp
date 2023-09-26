@@ -24,6 +24,7 @@
 
 #include "Materials/Lambertia.h"
 #include "Materials/Metal.h"
+#include "Materials/Dialectic.h"
 
 int main() {
 
@@ -37,13 +38,13 @@ int main() {
 	auto material_ground = std::make_shared<Lambertia>(glm::vec3(0.8, 0.8, 0.9));
 	auto material_center = std::make_shared<Lambertia>(glm::vec3(0.7, 0.3, 0.3));
 	auto material_left = std::make_shared<Metal>(glm::vec3(0.8, 0.8, 0.8), 1.0f);
-	auto material_right = std::make_shared<Metal>(glm::vec3(0.8, 0.6, 0.2), 0.2f);
+	auto material_right = std::make_shared<Dialectic>(1.5f);
 
 	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(0.0, -100.5, -100.0), 100.0, material_ground));
-	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(0.0, -0.5, -1.0), 0.5, material_center));
+	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(0.0, -0.5, -1.0), 0.5, material_right));
 
 	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(-1.0, 0.5, -1.0), 0.5, material_left));
-	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(1.0, -1.0, -4.0), 0.5, material_right));
+	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(1.0, -1.0, -4.0), 0.5, material_left));
 	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(-1.0, 0.0, -20.0), 8, material_left));
 	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(1.0, 1.0, -1.0), 1.0, material_right));
 	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(1.0, 1.0, -1.0), 0.2, material_ground));

@@ -44,3 +44,12 @@ glm::vec3 reflect(const glm::vec3 in_vec1, const glm::vec3 in_vec2) {
     return in_vec1 - 2 * dot(in_vec1, in_vec2) * in_vec2;
 }
 
+glm::vec3 refract(const glm::vec3 in_vec1, const glm::vec3 in_vec2, const float in_etaiOverEtat) {
+
+    const float cosTheta = std::fmin(glm::dot(-in_vec1, in_vec2), 1.0f);
+    const glm::vec3 rOutPerp = in_etaiOverEtat * (in_vec1 + cosTheta * in_vec2);
+    const glm::vec3 rOutParaellel = in_vec2 * -1.0f * static_cast<float>(sqrt(std::fabs(1.0f - pow(glm::length(rOutPerp), 2))));
+    return rOutPerp + rOutParaellel;
+
+}
+
