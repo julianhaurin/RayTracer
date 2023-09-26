@@ -16,7 +16,7 @@ bool Dialectic::Scatter(const Ray& in_ray, const HitRecord& in_hitRecord, glm::v
     const float sinTheta = sqrt(1.0f - pow(cosTheta, 2));
 
     glm::vec3 refracted;
-    if (refractionRatio * sinTheta > 1.0f) { // cannot refract, so should reflect
+    if (refractionRatio * sinTheta > 1.0f || reflectance(cosTheta, refractionRatio) > randomFloat()) { // cannot refract, so should reflect
         refracted = reflect(unitDir, in_hitRecord.m_normal);
     }
     else {
@@ -25,5 +25,14 @@ bool Dialectic::Scatter(const Ray& in_ray, const HitRecord& in_hitRecord, glm::v
 
     in_scattered = Ray(in_hitRecord.m_point, refracted);
     return true;
+
+}
+
+// Private Methods //
+
+float Dialectic::reflectance(const float in_cos, const float in_relflectenceIndex) const {
+    float r0 = (1 - in_relflectenceIndex) / (1 + in_relflectenceIndex);
+    r0 = r0 * r0;
+    return r0 + (1 - r0) * pow((1 - in_cos), 5);
 
 }

@@ -3,6 +3,8 @@
 
 #include "Material.h"
 
+#include "../Utility/utility.h"
+
 class Dialectic : public Material
 {
 
@@ -13,5 +15,8 @@ public:
 
 private:
 	const float m_refractionIndex;
+
+	// Schlick approximation to calculate reflectence
+	float reflectance(const float in_cos, const float in_relflectenceIndex) const;
 
 };
