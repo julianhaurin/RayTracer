@@ -4,7 +4,7 @@
 
 Basic ray tracer following this textbook: raytracing.github.io/v3/books/RayTracingInOneWeekend.html#diffusematerials.
 
-See more at: https://julianhaurin.onrender.com/
+See more at: khttps://julianhaurin.onrender.com/
 
 Supports different render objects and materials. Outputs a PPM image of the rendered scene. 
 

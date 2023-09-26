@@ -11,7 +11,7 @@ class Metal : public Material
 {
 
 public:
-	Metal(const glm::vec3& in_albedo);
+	Metal(const glm::vec3& in_albedo, const float in_fuzzAmount);
 
 	virtual bool Scatter(
 		const Ray& in_ray, const HitRecord& in_hitRec, glm::vec3& in_attenuation, Ray& in_scatteredRay
@@ -19,5 +19,6 @@ public:
 
 private:
 	const glm::vec3 m_albedo;
+	const float m_fuzzAmount;
 
 };

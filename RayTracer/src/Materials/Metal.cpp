@@ -1,8 +1,9 @@
 
 #include "Metal.h"
 
-Metal::Metal(const glm::vec3& in_albedo)
-	: m_albedo(in_albedo)
+Metal::Metal(const glm::vec3& in_albedo, const float in_fuzzAmount)
+	: m_albedo(in_albedo), 
+	  m_fuzzAmount(in_fuzzAmount < 1.0f && in_fuzzAmount >= 0.0f ? in_fuzzAmount : 1.0f)
 {}
 
 bool Metal::Scatter(
@@ -10,7 +11,7 @@ bool Metal::Scatter(
 ) const {
 
 	glm::vec3 reflected = reflect(glm::normalize(in_ray.getDirection()), in_hitRec.m_normal);
-	in_scatteredRay = Ray(in_hitRec.m_point, reflected);
+	in_scatteredRay = Ray(in_hitRec.m_point, reflected + randomUnitVector() * m_fuzzAmount);
 	in_attenuation = m_albedo;
 	return (glm::dot(in_scatteredRay.getDirection(), in_hitRec.m_normal) > 0);
 
