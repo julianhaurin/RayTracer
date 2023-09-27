@@ -2,25 +2,18 @@
 #include "Model.h"
 
 Model::Model(const std::vector<glm::vec3> in_vertices, const std::shared_ptr<Material> in_material, const float m_sizeMult)
-	: m_vertices(in_vertices), m_material(in_material), m_sizeMult(m_sizeMult)
+	: m_vertices(in_vertices), m_indices(std::vector<tinyobj::index_t>()),
+	  m_material(in_material), m_sizeMult(m_sizeMult)
 {
 
-	//glm::mat4 projection = glm::perspective(glm::radians(
-	//	60.0f),
-	//	800.0f / 450.0f,
-	//	0.1f, 255.0f
-	//);
-
 	// populate list of render objects with triangles using provided vertices
-	for (uint32_t i = 0; i <= in_vertices.size() - 3; i++) {
+	for (uint32_t i = 0; i <= m_vertices.size() - 3; i++) {
 
-		auto currentTriangle = 
-			std::make_shared<Triangle>(
-				in_vertices[i++], // / 400.0f, // hardcoded for now
-				in_vertices[i++], // / 400.0f,
-				in_vertices[i++], // / 400.0f,
-				m_material
-			);
+		const glm::vec3 vert1 = m_vertices[i++];
+		const glm::vec3 vert2 = m_vertices[i++];
+		const glm::vec3 vert3 = m_vertices[i++];
+
+		auto currentTriangle = std::make_shared<Triangle>(vert1, vert2, vert3, m_material);
 
 		m_renderList.addObject(currentTriangle);
 
@@ -29,9 +22,31 @@ Model::Model(const std::vector<glm::vec3> in_vertices, const std::shared_ptr<Mat
 
 }
 
+Model::Model(const std::string in_objFilePath, const std::shared_ptr<Material> in_material, const float m_sizeMult)
+	: m_vertices(std::vector<glm::vec3>()), m_indices(std::vector<tinyobj::index_t>()),
+	  m_material(in_material), m_sizeMult(m_sizeMult)
+{
+	loadObjData(in_objFilePath);
+
+	// abstract to function
+	for (uint32_t i = 0; i <= m_vertices.size() - 3; i++) {
+
+		const glm::vec3 vert1 = m_vertices[i++];
+		const glm::vec3 vert2 = m_vertices[i++];
+		const glm::vec3 vert3 = m_vertices[i++];
+
+		auto currentTriangle = std::make_shared<Triangle>(vert1, vert2, vert3, m_material);
+
+		m_renderList.addObject(currentTriangle);
+
+	}
+
+}
+
 // Private Methods //
 
-bool Model::loadObjData() {
+// code taken from environment simulator
+bool Model::loadObjData(const std::string in_objFilePath) {
 
 	tinyobj::ObjReader objReader;
 
@@ -39,22 +54,22 @@ bool Model::loadObjData() {
 	objReaderConfig.mtl_search_path = "./assets/textures/";
 
 	// reads file data
-	bool readStatus = objReader.ParseFromFile(m_objFilePath, objReaderConfig);
+	bool readStatus = objReader.ParseFromFile(in_objFilePath, objReaderConfig);
 
 	// handles error messages
 	if (readStatus == false) {
 		// prints error message
-		std::cout << "[J] ERROR - TINYOBJLOADER: unable to read from .obj file " << m_objFilePath << ": ";
+		std::cout << "[J] ERROR - TINYOBJLOADER: unable to read from .obj file " << in_objFilePath << ": ";
 		std::cout << objReader.Error() << std::endl;
 		return false;
 
 	}
 
 	// handles warning messages
-	if (!objReader.Warning().empty()) {
-		std::cout << "[J] WARNING - TINYOBJLOADER: warning when reading obj data from file " << m_objFilePath << ": ";
-		std::cout << objReader.Warning() << std::endl;
-	}
+	//if (!objReader.Warning().empty()) {
+	//	std::cout << "[J] WARNING - TINYOBJLOADER: warning when reading obj data from file " << in_objFilePath << ": ";
+	//	std::cout << objReader.Warning() << std::endl;
+	//}
 
 	// loads data into containers //
 	const tinyobj::attrib_t attrib = objReader.GetAttrib();
@@ -74,28 +89,16 @@ bool Model::loadObjData() {
 			for (size_t vertIdx = 0; vertIdx < faceVertices; vertIdx++) {
 
 				tinyobj::index_t index = shapes[shapeIdx].mesh.indices[idxOffset + vertIdx];
+				m_indices.push_back(index);
 
-				// EBO data
-				m_IndexData.push_back(index);
+				// *** no size multiplyer for now
+				glm::vec3 currentVertex(
+					(attrib.vertices[3 * (float)index.vertex_index] - 20) / 10,
+					(attrib.vertices[3 * (float)index.vertex_index + 1] - 20) / 10,
+					(attrib.vertices[3 * (float)index.vertex_index + 2] - 20) / 10
+				);
 
-				// VBO data //
-
-				// vertex position
-				m_VertexData.push_back(attrib.vertices[3 * (float)index.vertex_index] * m_vertexPositionMultiplyer); // + 0
-				m_VertexData.push_back(attrib.vertices[3 * (float)index.vertex_index + 1] * m_vertexPositionMultiplyer);
-				m_VertexData.push_back(attrib.vertices[3 * (float)index.vertex_index + 2] * m_vertexPositionMultiplyer);
-
-				// rgb color value
-				//m_VertexData.push_back(attrib.colors[3 * size_t(index.vertex_index)]); // + 0
-				//m_VertexData.push_back(attrib.colors[3 * size_t(index.vertex_index) + 1]);
-				//m_VertexData.push_back(attrib.colors[3 * size_t(index.vertex_index) + 2]);
-
-				// normal data
-				if (index.normal_index >= 0) {
-					m_VertexData.push_back(attrib.normals[3 * size_t(index.normal_index)]); // + 0
-					m_VertexData.push_back(attrib.normals[3 * size_t(index.normal_index) + 1]);
-					m_VertexData.push_back(attrib.normals[3 * size_t(index.normal_index) + 2]);
-				}
+				m_vertices.push_back(currentVertex);
 
 			}
 
@@ -103,13 +106,6 @@ bool Model::loadObjData() {
 
 		}
 	}
-
-	std::cout << "[J] - Successfully loaded model obj data! \n";
-
-	//for (int i = 0; i < m_VertexData.size(); i++) {
-	//	std::cout << m_VertexData[i] << " ";
-	//	if ((i+1) % 3 == 0) std::cout << "\n";
-	//}
 
 	return true;
 

@@ -44,13 +44,14 @@ int main() {
 	//auto triangle = std::make_shared<Triangle>(glm::vec3(0.2, 0.4, -0.5), glm::vec3(0.1, -0.5, -0.5), glm::vec3(-0.3, 0.3, -0.5), groundMat);
 	//worldObjects.addObject(triangle);
 
-	std::vector<glm::vec3> triangleVertices = {
+	const std::vector<glm::vec3> triangleVertices = {
 		glm::vec3(0.2f, 0.04f, -0.05f),
 		glm::vec3(0.01f, -0.05f, -0.05f),
-		glm::vec3(-0.03f, 0.03f, -0.05f)
+		glm::vec3(-0.03f, 0.03f, -0.05f),
 	};
 
-	Model testModel = Model(triangleVertices, groundMat, 0.5f);
+	//Model testModel = Model(triangleVertices, groundMat, 0.5f);
+	Model testModel = Model("./assets/meshes/cube.obj", groundMat, 1.0f);
 	worldObjects.addObject(testModel.getRenderObjectList());
 
 

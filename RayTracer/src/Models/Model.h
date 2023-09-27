@@ -6,6 +6,8 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <string>
+#include <cstdint>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -30,11 +32,15 @@ public:
 private:
 
 	std::vector<glm::vec3> m_vertices;
+	std::vector<tinyobj::index_t> m_indices;
+
 	const std::shared_ptr<Material> m_material;
 	
 	const float m_sizeMult;
 
 	RenderObjectList m_renderList;
+
+	bool loadObjData(const std::string in_objFilePath);
 
 };
 
