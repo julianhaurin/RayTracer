@@ -3,6 +3,8 @@
 
 #include "RenderObject.h"
 
+#include <glm/gtx/intersect.hpp>
+
 class Triangle : public RenderObject
 {
 

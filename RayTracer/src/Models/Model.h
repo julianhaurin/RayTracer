@@ -3,11 +3,13 @@
 
 #pragma once
 
+#include <iostream>
 #include <memory>
 #include <vector>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <tinyobj/tiny_obj_loader.h>
 
 #include "../Materials/Material.h"
 
@@ -21,12 +23,13 @@ class Model
 public:
 
 	Model(const std::vector<glm::vec3> in_vertices, const std::shared_ptr<Material> in_material, const float m_sizeMult);
+	Model(const std::string in_objFilePath, const std::shared_ptr<Material> in_material, const float m_sizeMult);
 
 	inline std::shared_ptr<RenderObjectList> getRenderObjectList() const { return std::make_shared<RenderObjectList>(m_renderList); }
 
 private:
 
-	const std::vector<glm::vec3> m_vertices;
+	std::vector<glm::vec3> m_vertices;
 	const std::shared_ptr<Material> m_material;
 	
 	const float m_sizeMult;

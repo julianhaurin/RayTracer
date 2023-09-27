@@ -7,7 +7,33 @@ Triangle::Triangle(const glm::vec3 in_X, const glm::vec3 in_Y, const glm::vec3 i
 
 bool Triangle::isHit(const Ray& in_ray, Interval in_interval, HitRecord& in_hitRecord) const {
 
+	float t; // distance between hit on ray and origin
+	glm::vec2 barycentricCoords; // barycentric coords of intersection point
+
+	if (glm::intersectRayTriangle(in_ray.getOrigin(), in_ray.getDirection(), m_X, m_Y, m_Z, barycentricCoords, t) && 
+		in_interval.surrounds(t)) 
+	{
+		// update hit record
+		in_hitRecord.m_t = t;
+		in_hitRecord.m_point = in_ray.at(in_hitRecord.m_t);
+
+		auto outward_normal = glm::cross(m_Y - m_X, m_Z - m_X); // check ***
+		in_hitRecord.setFaceNormal(in_ray, outward_normal);
+
+		in_hitRecord.m_isFrontFacing = glm::dot(in_ray.getDirection(), in_hitRecord.m_normal) < 0;
+		in_hitRecord.m_material_p = m_material_p;
+
+		return true;
+
+	}
+
+	return false;
+
+
+
 	// calculate edges
+
+	/*
 	const glm::vec3 edge0 = m_Y - m_X;
 	const glm::vec3 edge1 = m_Z - m_Y;
 	const glm::vec3 edge2 = m_X - m_Z;
@@ -45,5 +71,6 @@ bool Triangle::isHit(const Ray& in_ray, Interval in_interval, HitRecord& in_hitR
 	in_hitRecord.m_point = in_ray.at(t);
 
 	return true;
+	*/
 
 }
