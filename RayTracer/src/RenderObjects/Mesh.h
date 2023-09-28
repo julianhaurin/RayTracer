@@ -7,6 +7,7 @@
 #include <vector>
 
 #include <glm/glm.hpp>
+#include <glm/gtx/intersect.hpp>
 
 #include "../Materials/Material.h"
 
@@ -40,12 +41,12 @@ class Mesh : public RenderObject
 public:
 	Mesh(const std::vector<MeshVert> in_vertices, const std::vector<MeshFace> in_faces, const std::shared_ptr<Material> in_material_p);
 
+	bool isHit(const Ray& in_ray, Interval in_interval, HitRecord& in_hitRecord) const;
+
 private:
 	std::vector<MeshVert> m_Vertices;
 	std::vector<MeshFace> m_Faces;
 
 	const std::shared_ptr<Material> m_Material_p;
-
-
 
 };

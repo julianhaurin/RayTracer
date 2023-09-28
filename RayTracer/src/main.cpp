@@ -22,6 +22,7 @@
 #include "RenderObjects/RenderObject.h"
 #include "RenderObjects/RenderObjectList.h"
 #include "RenderObjects/Sphere.h"
+#include "RenderObjects/Mesh.h"
 #include "RenderObjects/Triangle.h"
 
 #include "Models/Model.h"
@@ -51,8 +52,10 @@ int main() {
 	};
 
 	//Model testModel = Model(triangleVertices, groundMat, 0.5f);
-	Model testModel = Model("./assets/meshes/cube.obj", groundMat, 1.0f);
+	Model testModel = Model("./assets/meshes/babyDuck.obj", groundMat, 1.0f);
 	worldObjects.addObject(testModel.getRenderObjectList());
+
+	//Mesh testMesh = Mesh(triangleVertices);
 
 
 	/*
