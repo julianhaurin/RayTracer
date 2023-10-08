@@ -5,7 +5,7 @@
 // raytracing.github.io/books/RayTracingInOneWeekend.html
 
 // Notes:
-// image widht/height and viewport width/height need to be uniform across
+// image width/height and viewport width/height need to be uniform across
 // camera class and scene class - fix
 // add functionality to more easily write to .ppm file
 // change hittable name
@@ -36,7 +36,7 @@ int main() {
 
 	// Image //
 	const float aspectRatio = 16.0f / 9.0f;
-	const uint32_t imageWidth = 800;
+	const uint32_t imageWidth = 400;
 
 	// World Objects //
 	RenderObjectList worldObjects = RenderObjectList();
@@ -52,32 +52,30 @@ int main() {
 	};
 
 	//Model testModel = Model(triangleVertices, groundMat, 0.5f);
-	Model testModel = Model("./assets/meshes/babyDuck.obj", groundMat, 1.0f);
-	worldObjects.addObject(testModel.getRenderObjectList());
+	//Model testModel = Model("./assets/meshes/babyDuck.obj", groundMat, 1.0f);
+	//worldObjects.addObject(testModel.getRenderObjectList());
 
 	//Mesh testMesh = Mesh(triangleVertices);
-
-
-	/*
-	auto material_ground = std::make_shared<Lambertia>(glm::vec3(0.8, 0.8, 0.9));
-	auto material_center = std::make_shared<Lambertia>(glm::vec3(0.7, 0.3, 0.3));
-	auto material_left = std::make_shared<Metal>(glm::vec3(0.8, 0.8, 0.8), 1.0f);
+	
+	auto material_ground = std::make_shared<Lambertia>(glm::vec3(0.99, 0.8, 0.9));
+	auto material_center = std::make_shared<Lambertia>(glm::vec3(0.7, 0.3, 0.9));
+	auto material_left = std::make_shared<Metal>(glm::vec3(0.8, 0.8, 0.3), 1.0f);
 	auto material_right = std::make_shared<Dialectic>(1.5f);
 
 	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(0.0, -100.5, -100.0), 100.0, material_ground));
 	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(0.0, -0.5, -1.0), 0.5, material_right));
 
 	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(-1.0, 0.5, -1.0), 0.5, material_left));
-	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(1.0, -1.0, -4.0), 0.5, material_left));
-	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(-1.0, 0.0, -20.0), 8, material_left));
+	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(1.0, -1.0, -4.0), 0.5, material_ground));
+	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(-1.0, 0.0, -20.0), 8, material_ground));
 	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(1.0, 1.0, -1.0), 1.0, material_right));
 	worldObjects.addObject(std::make_shared<Sphere>(glm::vec3(1.0, 1.0, -1.0), 0.2, material_ground));
-	*/
+	
 
 	// Camera //
 	Camera camera = Camera(aspectRatio, imageWidth);
-	
 	camera.Render(worldObjects);
 
+	return EXIT_SUCCESS;
 
 }

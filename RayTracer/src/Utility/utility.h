@@ -1,11 +1,14 @@
 
-
 #pragma once
 
 #include <cmath>
 #include <random>
 
 #include "glm/glm.hpp"
+
+# define PI 3.14159265358979323846
+
+inline float degreesToRadians(const float in_degrees) { return in_degrees * (PI / 180.0f); }
 
 float randomFloat(const float min = 0.0f, const float max = 1.0f);
 

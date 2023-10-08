@@ -4,19 +4,20 @@
 // Public Methods //
 
 // holy moly
-Camera::Camera(const float in_aspectRatio, const uint32_t in_imageWidth)
+Camera::Camera(const float in_aspectRatio, const uint32_t in_imageWidth, const float in_vertFOV)
 	: m_aspectRatio(in_aspectRatio), m_imageWidth(in_imageWidth),
 	  m_imageHeight(static_cast<uint32_t>(m_imageWidth / m_aspectRatio)),
-	  m_center(glm::vec3(0, 0, 0)), m_viewportHeight(2.0f), 
-	  m_viewportWidth(m_viewportHeight * (static_cast<float>(m_imageWidth) / m_imageWidth)),
-	  m_viewport_U(glm::vec3(m_viewportWidth, 0, 0)),
-	  m_viewport_V(glm::vec3(0, -m_viewportHeight, 0)),
-	  m_pixelDelta_U(m_viewport_U / static_cast<float>(m_imageWidth)), 
-	  m_pixelDelta_V(m_viewport_V / static_cast<float>(m_imageHeight)),
-	  m_viewportUpperLeft(m_center - glm::vec3(0, 0, 1) - m_viewport_U / 2.0f - m_viewport_V / 2.0f),
-	  m_pixelOriginLoc(m_viewportUpperLeft + 0.5f * (m_pixelDelta_U + m_pixelDelta_V)),
-	  m_samplesPerPixel(10)
-{}
+	  m_vFOV(in_vertFOV), m_defocusAngle(0.0f),
+	  m_maxDepth(10), m_samplesPerPixel(10),
+  	  m_position(glm::vec3(-2.0f, -2.0f, 1.0f)),
+	  m_lookAtPoint(glm::vec3(0.0f, 0.0f, 1.0f)),
+	  m_cameraUp(glm::vec3(0.0f, 1.0f, 0.0f)),
+	  m_focusDistance(length(m_position - m_lookAtPoint))
+{
+	
+	Initialize();
+
+}
 
 void Camera::Render(const RenderObject& in_worldObjects) {
 
@@ -30,7 +31,7 @@ void Camera::Render(const RenderObject& in_worldObjects) {
 			glm::vec3 pixelColor(0, 0, 0);
 			for (int sample = 0; sample < m_samplesPerPixel; sample++) {
 				Ray ray = getRay(j, i);
-				pixelColor += rayColor(ray, in_worldObjects, 10); // *** 10 == max ray bounce depth
+				pixelColor += rayColor(ray, in_worldObjects, m_maxDepth);
 			}
 			writeColor(std::cout, pixelColor, m_samplesPerPixel);
 
@@ -40,6 +41,39 @@ void Camera::Render(const RenderObject& in_worldObjects) {
 }
 
 // Private Methods //
+
+// Initializes camera member variables
+void Camera::Initialize() {
+
+	// calculate viewport dimensions //
+	const float theta = degreesToRadians(m_vFOV);
+	const float h = tan(theta / 2);
+
+	const float viewportHeight = 2 * h * m_focusDistance;
+	const float viewportWidth = viewportHeight * (static_cast<double>(m_imageWidth) / m_imageHeight);
+
+	// calculate camera basis vectors for camera frame
+	m_W = glm::normalize(m_position - m_lookAtPoint);
+	m_U = glm::normalize(glm::cross(m_cameraUp, m_W));
+	m_V = glm::normalize(glm::cross(m_W, m_V));
+
+	// calculate viewport vectors
+	const glm::vec3 viewport_U = viewportWidth * m_U;
+	const glm::vec3 viewport_V = viewportHeight * -m_V;
+
+	// pixel deltas
+	m_pixelDelta_U = viewport_U / static_cast<float>(m_imageWidth);
+	m_pixelDelta_V = viewport_V / static_cast<float>(m_imageHeight);
+
+	// calculate upper left position
+	m_viewportUpperLeft = m_position - (m_focusDistance * m_W) - (viewport_U / 2.0f) - (viewport_V / 2.0f);
+	m_pixelOriginLoc = m_viewportUpperLeft + 0.5f * (m_pixelDelta_U + m_pixelDelta_V);
+
+	const float defocusRadius = m_focusDistance * tan(degreesToRadians(m_defocusAngle / 2.0f));
+	const glm::vec3 m_defocusDisk_U = m_U * defocusRadius;
+	const glm::vec3 m_defocusDisk_V = m_V * defocusRadius;
+
+}
 
 void Camera::writeColor(std::ostream& outStream, const glm::vec3 pixelColor, const uint32_t in_sampelsPerPixel) {
 
@@ -69,7 +103,7 @@ Ray Camera::getRay(uint32_t i, uint32_t j) const {
 	const glm::vec3 pixelCenter = m_pixelOriginLoc + ((float)i * m_pixelDelta_U) + ((float)j * m_pixelDelta_V);
 	const glm::vec3 pixelSample = pixelCenter + pixelSampleSquare();
 
-	const glm::vec3 rayOrigin = m_center;
+	const glm::vec3 rayOrigin = m_position;
 	const glm::vec3 rayDirection = pixelSample - rayOrigin;
 
 	return Ray(rayOrigin, rayDirection);
