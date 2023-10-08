@@ -87,6 +87,10 @@ void Camera::writeColor(std::ostream& outStream, const glm::vec3 pixelColor, con
 	g *= scale;
 	b *= scale;
 
+	r = linearToGamma(r);
+	g = linearToGamma(g);
+	b = linearToGamma(b);
+
 	static const Interval intensity(0.000, 0.999);
 	outStream << static_cast<int>(256 * intensity.clamp(r)) << ' '
 		 	  << static_cast<int>(256 * intensity.clamp(g)) << ' '
